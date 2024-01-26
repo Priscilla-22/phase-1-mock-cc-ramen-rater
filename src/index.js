@@ -2,20 +2,21 @@
 document.addEventListener("DOMContentLoaded", () => {
   const baseURL = "http://localhost:3000";
   const ramenMenu = document.querySelector("#ramen-menu");
+  const ramenDetail = document.querySelector("#ramen-detail");
   const detailImg = document.querySelector(".detail-image");
   const ramenName = document.querySelector(".name");
   const restaurant = document.querySelector(".restaurant");
   const ratingDisplay = document.querySelector("#rating-display");
   const commentDisplay = document.querySelector("#comment-display");
   const newRamenForm = document.querySelector("#new-ramen");
-  
+
   fetch(`${baseURL}/ramens`)
     .then((resp) => resp.json())
     .then((data) => {
       displayRamens(data);
 
       if (data.length > 0) {
-        showDetail(data[0])
+        showDetail(data[0]);
       }
     })
     .catch((err) => console.error(err));
@@ -29,7 +30,16 @@ document.addEventListener("DOMContentLoaded", () => {
       detailImg.addEventListener("click", () => {
         showDetail(ramen);
       });
+
+      const deleteRamenBtn = document.createElement("button");
+      deleteRamenBtn.classList.add("delete-ramen");
+      deleteRamenBtn.textContent = "Delete";
+
+      deleteRamenBtn.addEventListener("click", () => {
+        deleteRamen(ramen, detailImg,deleteRamenBtn);
+      });
       ramenMenu.appendChild(detailImg);
+      ramenMenu.appendChild(deleteRamenBtn);
     });
   }
 
@@ -66,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     ramenMenu.appendChild(newRamenImg);
-    
+
     newName.value = "";
     newRestaurant.value = "";
     newImg.value = "";
