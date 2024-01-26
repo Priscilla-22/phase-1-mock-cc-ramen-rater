@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
       deleteRamenBtn.textContent = "Delete";
 
       deleteRamenBtn.addEventListener("click", () => {
-        deleteRamen(ramen, detailImg,deleteRamenBtn);
+        deleteRamen(ramen, detailImg, deleteRamenBtn);
       });
       ramenMenu.appendChild(detailImg);
       ramenMenu.appendChild(deleteRamenBtn);
@@ -88,4 +88,20 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     addNewRamen();
   });
+
+  function deleteRamen(ramen, detailImg, deleteRamenBtn) {
+    ramenMenu.removeChild(detailImg);
+    ramenMenu.removeChild(deleteRamenBtn);
+    clearDetail();
+  }
+
+  function clearDetail() {
+    detailImg.src = "./assets/image-placeholder.jpg";
+    detailImg.alt = "Insert Name Here";
+
+    ramenName.textContent = "Insert Name Here";
+    restaurant.textContent = "Insert Restaurant Here";
+    ratingDisplay.textContent = "Insert rating here";
+    commentDisplay.textContent = "Insert comment here";
+  }
 });
