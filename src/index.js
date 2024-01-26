@@ -8,13 +8,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const ratingDisplay = document.querySelector("#rating-display");
   const commentDisplay = document.querySelector("#comment-display");
   const newRamenForm = document.querySelector("#new-ramen");
-
+  
   fetch(`${baseURL}/ramens`)
     .then((resp) => resp.json())
     .then((data) => {
       displayRamens(data);
+
+      if (data.length > 0) {
+        showDetail(data[0])
+      }
     })
-    .catch((err) => console.log(err));
+    .catch((err) => console.error(err));
 
   function displayRamens(ramens) {
     ramens.forEach((ramen) => {
