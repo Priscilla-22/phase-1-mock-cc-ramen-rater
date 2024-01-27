@@ -9,17 +9,22 @@ document.addEventListener("DOMContentLoaded", () => {
   const ratingDisplay = document.querySelector("#rating-display");
   const commentDisplay = document.querySelector("#comment-display");
   const newRamenForm = document.querySelector("#new-ramen");
+  const editRamenForm = document.querySelector("#edit-ramen");
+  const editRating = document.querySelector("#edit-rating").value;
+  const editComment = document.querySelector("#edit-comment").value;
 
-  fetch(`${baseURL}/ramens`)
-    .then((resp) => resp.json())
-    .then((data) => {
-      displayRamens(data);
+  function fetchRamens() {
+    fetch(`${baseURL}/ramens`)
+      .then((resp) => resp.json())
+      .then((data) => {
+        displayRamens(data);
 
-      if (data.length > 0) {
-        showDetail(data[0]);
-      }
-    })
-    .catch((err) => console.error(err));
+        if (data.length > 0) {
+          showDetail(data[0]);
+        }
+      })
+      .catch((err) => console.error(err));
+  }
 
   function displayRamens(ramens) {
     ramens.forEach((ramen) => {
@@ -51,6 +56,8 @@ document.addEventListener("DOMContentLoaded", () => {
     restaurant.textContent = ramen.restaurant;
     ratingDisplay.textContent = ramen.rating;
     commentDisplay.textContent = ramen.comment;
+
+    ramenDetail.dataset.ramenId = ramen.id;
   }
 
   function addNewRamen() {
@@ -104,4 +111,40 @@ document.addEventListener("DOMContentLoaded", () => {
     ratingDisplay.textContent = "Insert rating here";
     commentDisplay.textContent = "Insert comment here";
   }
+
+  editRamenForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const ramenId = ramenDetail.dataset.ramenId;
+    const updatedRating = document.querySelector("#edit-rating").value;
+    const updatedComment = document.querySelector("#edit-comment").value;
+    updateRamens(
+      ramenId,
+      { rating: updatedRating, comment: updatedComment },
+      (data) => {
+        showDetail(data);
+      }
+    );
+  });
+
+  function updateRamens(ramenId, updatedData, callback) {
+    fetch(`${baseURL}/ramens/${ramenId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedData),
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        if (callback) {
+          callback(data);
+        }
+        const updatedRating = (document.querySelector("#edit-rating").value =
+          "");
+        const updatedComment = (document.querySelector("#edit-comment").value =
+          "");
+      })
+      .catch((err) => console.error(err));
+  }
+  fetchRamens();
 });
