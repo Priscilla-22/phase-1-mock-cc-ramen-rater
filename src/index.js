@@ -74,21 +74,33 @@ document.addEventListener("DOMContentLoaded", () => {
       rating: newRating.value,
       comment: newComment.value,
     };
-    const newRamenImg = document.createElement("img");
-    newRamenImg.src = newRamen.image;
-    newRamenImg.alt = newRamen.name;
 
-    newRamenImg.addEventListener("click", () => {
-      showDetail(newRamen);
+    createNewRamen(newRamen, (data) => {
+      const newRamenImg = document.createElement("img");
+      newRamenImg.src = data.image;
+      newRamenImg.alt = data.name;
+
+      newRamenImg.addEventListener("click", () => {
+        showDetail(data);
+      });
+
+      const deleteRamenBtn = document.createElement("button");
+      deleteRamenBtn.classList.add("delete-ramen");
+      deleteRamenBtn.textContent = "Delete";
+
+      deleteRamenBtn.addEventListener("click", () => {
+        deleteRamen(data, newRamenImg, deleteRamenBtn);
+      });
+
+      ramenMenu.appendChild(newRamenImg);
+      ramenMenu.appendChild(deleteRamenBtn);
+
+      newName.value = "";
+      newRestaurant.value = "";
+      newImg.value = "";
+      newRating.value = "";
+      newComment.value = "";
     });
-
-    ramenMenu.appendChild(newRamenImg);
-
-    newName.value = "";
-    newRestaurant.value = "";
-    newImg.value = "";
-    newRating.value = "";
-    newComment.value = "";
   }
 
   newRamenForm.addEventListener("submit", (e) => {
@@ -143,6 +155,24 @@ document.addEventListener("DOMContentLoaded", () => {
           "");
         const updatedComment = (document.querySelector("#edit-comment").value =
           "");
+      })
+      .catch((err) => console.error(err));
+  }
+
+  //persist new ramens
+  function createNewRamen(newRamen, callback) {
+    fetch(`${baseURL}/ramens`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newRamen),
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        if (callback) {
+          callback(data);
+        }
       })
       .catch((err) => console.error(err));
   }
