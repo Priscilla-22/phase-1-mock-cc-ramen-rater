@@ -138,6 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   });
 
+  //persist my updates to a ramen's rating and comment
   function updateRamens(ramenId, updatedData, callback) {
     fetch(`${baseURL}/ramens/${ramenId}`, {
       method: "PATCH",
@@ -176,5 +177,21 @@ document.addEventListener("DOMContentLoaded", () => {
       })
       .catch((err) => console.error(err));
   }
+
+  //persist any ramen deletions
+  function deleteRamen(ramen, detailImg, deleteRamenBtn) {
+    const ramenId = ramen.id;
+    fetch(`${baseURL}/ramens/${ramenId}`, {
+      method: "DELETE",
+    })
+      .then((resp) => resp.json())
+      .then(() => {
+        ramenMenu.removeChild(detailImg);
+        ramenMenu.removeChild(deleteRamenBtn);
+        clearDetail();
+      })
+      .catch((err) => console.error(err));
+  }
+
   fetchRamens();
 });
